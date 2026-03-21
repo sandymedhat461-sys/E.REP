@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Doctor extends Model
+class Doctor extends Authenticatable
 {
     protected $table = 'doctors';
+
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'full_name',
@@ -23,7 +29,7 @@ class Doctor extends Model
         'syndicate_id_image',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {
@@ -37,9 +43,24 @@ class Doctor extends Model
         return $this->hasMany(RewardRedemption::class);
     }
 
+    public function drugReviews(): HasMany
+    {
+        return $this->hasMany(DrugReview::class);
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
     public function eventInvitations(): HasMany
     {
         return $this->hasMany(EventInvitation::class);
+    }
+
+    public function eventRequests(): HasMany
+    {
+        return $this->hasMany(EventRequest::class);
     }
 
     public function meetings(): HasMany
@@ -55,5 +76,10 @@ class Doctor extends Model
     public function drugSamples(): HasMany
     {
         return $this->hasMany(DrugSample::class);
+    }
+
+    public function medicalReps(): BelongsToMany
+    {
+        return $this->belongsToMany(MedicalRep::class, 'rep_doctors', 'doctor_id', 'rep_id');
     }
 }

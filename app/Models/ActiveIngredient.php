@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class ActiveIngredient extends Model
+{
+    protected $table = 'active_ingredients';
+
+    protected $fillable = [
+        'name',
+        'description',
+        'side_effect',
+    ];
+
+    public function drugs(): BelongsToMany
+    {
+        return $this->belongsToMany(Drug::class, 'drug_ingredients', 'ingredient_id', 'drug_id');
+    }
+}
+

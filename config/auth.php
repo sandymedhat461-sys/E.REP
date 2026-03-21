@@ -40,6 +40,26 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'admin-api' => [
+            'driver' => 'sanctum',
+            'provider' => 'admins',
+        ],
+
+        'company-api' => [
+            'driver' => 'sanctum',
+            'provider' => 'companies',
+        ],
+
+        'doctor-api' => [
+            'driver' => 'sanctum',
+            'provider' => 'doctors',
+        ],
+
+        'rep-api' => [
+            'driver' => 'sanctum',
+            'provider' => 'reps',
+        ],
     ],
 
     /*
@@ -63,6 +83,26 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+
+        'companies' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Company::class,
+        ],
+
+        'doctors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Doctor::class,
+        ],
+
+        'reps' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\MedicalRep::class,
         ],
 
         // 'users' => [

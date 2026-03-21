@@ -36,4 +36,9 @@ class Event extends Model
     {
         return $this->hasMany(EventInvitation::class, 'event_id');
     }
+
+    public function eventRequests(): HasMany
+    {
+        return $this->hasMany(EventRequest::class, 'event_id');
+    }
 }
