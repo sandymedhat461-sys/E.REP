@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Doctor;
 
 use App\Http\Controllers\Controller;
+use App\Models\Doctor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -13,15 +14,16 @@ class NotificationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $doctorId = (int) $request->user()->id;
+        $doctorTypes = ['doctor', 'Doctor', Doctor::class, 'App\\Models\\Doctor'];
         $notifications = DB::table('notifications')
             ->where('notifiable_id', $doctorId)
-            ->where('notifiable_type', 'doctor')
+            ->whereIn('notifiable_type', $doctorTypes)
             ->orderByDesc('created_at')
             ->get();
 
         $unreadCount = DB::table('notifications')
             ->where('notifiable_id', $doctorId)
-            ->where('notifiable_type', 'doctor')
+            ->whereIn('notifiable_type', $doctorTypes)
             ->whereNull('read_at')
             ->count();
 
@@ -33,10 +35,11 @@ class NotificationController extends Controller
 
     public function markAsRead(Request $request, string $id): JsonResponse
     {
+        $doctorTypes = ['doctor', 'Doctor', Doctor::class, 'App\\Models\\Doctor'];
         $updated = DB::table('notifications')
             ->where('id', $id)
             ->where('notifiable_id', $request->user()->id)
-            ->where('notifiable_type', 'doctor')
+            ->whereIn('notifiable_type', $doctorTypes)
             ->update(['read_at' => Carbon::now()]);
 
         if (!$updated) {
@@ -48,9 +51,10 @@ class NotificationController extends Controller
 
     public function markAllAsRead(Request $request): JsonResponse
     {
+        $doctorTypes = ['doctor', 'Doctor', Doctor::class, 'App\\Models\\Doctor'];
         DB::table('notifications')
             ->where('notifiable_id', $request->user()->id)
-            ->where('notifiable_type', 'doctor')
+            ->whereIn('notifiable_type', $doctorTypes)
             ->whereNull('read_at')
             ->update(['read_at' => Carbon::now()]);
 
