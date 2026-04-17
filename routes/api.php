@@ -30,6 +30,8 @@ use App\Http\Controllers\Company\EventController as CompanyEventController;
 use App\Http\Controllers\Company\EventInvitationController as CompanyEventInvitationController;
 use App\Http\Controllers\Company\EventRequestController as CompanyEventRequestController;
 use App\Http\Controllers\Company\MedicalRepController as CompanyMedicalRepController;
+use App\Http\Controllers\Company\NotificationController as CompanyNotificationController;
+use App\Http\Controllers\Company\PostController as CompanyPostController;
 use App\Http\Controllers\Company\RewardController as CompanyRewardController;
 use App\Http\Controllers\Company\RewardRedemptionController as CompanyRewardRedemptionController;
 use App\Http\Controllers\MedicalRep\AssignedDoctorController;
@@ -178,6 +180,20 @@ Route::prefix('company')->middleware('auth:company-api')->group(function () {
     Route::get('/reps/{id}', [CompanyMedicalRepController::class, 'show']);
     Route::post('/reps/{id}/targets', [CompanyMedicalRepController::class, 'upsertTarget']);
     Route::get('/reps/{id}/targets', [CompanyMedicalRepController::class, 'targets']);
+
+    Route::get('/posts', [CompanyPostController::class, 'index']);
+    Route::post('/posts', [CompanyPostController::class, 'store']);
+    Route::get('/posts/{id}', [CompanyPostController::class, 'show']);
+    Route::put('/posts/{id}', [CompanyPostController::class, 'update']);
+    Route::delete('/posts/{id}', [CompanyPostController::class, 'destroy']);
+    Route::post('/posts/{postId}/comments', [CompanyPostController::class, 'storeComment']);
+    Route::delete('/comments/{id}', [CompanyPostController::class, 'destroyComment']);
+    Route::post('/posts/{postId}/like', [CompanyPostController::class, 'like']);
+    Route::delete('/posts/{postId}/unlike', [CompanyPostController::class, 'unlike']);
+
+    Route::get('/notifications', [CompanyNotificationController::class, 'index']);
+    Route::post('/notifications/{id}/read', [CompanyNotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [CompanyNotificationController::class, 'markAllAsRead']);
 });
 
 Route::prefix('rep')->middleware('auth:rep-api')->group(function () {
