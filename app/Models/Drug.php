@@ -69,6 +69,11 @@ class Drug extends Model
         return $this->belongsToMany(ActiveIngredient::class, 'drug_ingredients', 'drug_id', 'ingredient_id');
     }
 
+    public function ingredients(): BelongsToMany
+    {
+        return $this->activeIngredients();
+    }
+
     public function medicalReps(): BelongsToMany
     {
         return $this->belongsToMany(MedicalRep::class, 'rep_drug_assignments', 'drug_id', 'rep_id');

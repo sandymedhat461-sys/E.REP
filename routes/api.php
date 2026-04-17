@@ -24,6 +24,23 @@ use App\Http\Controllers\Doctor\PostController;
 use App\Http\Controllers\Doctor\PostLikeController;
 use App\Http\Controllers\Doctor\RewardController;
 use App\Http\Controllers\Doctor\RewardRedemptionController;
+use App\Http\Controllers\Company\ActiveIngredientController as CompanyActiveIngredientController;
+use App\Http\Controllers\Company\DrugController as CompanyDrugController;
+use App\Http\Controllers\Company\EventController as CompanyEventController;
+use App\Http\Controllers\Company\EventInvitationController as CompanyEventInvitationController;
+use App\Http\Controllers\Company\EventRequestController as CompanyEventRequestController;
+use App\Http\Controllers\Company\MedicalRepController as CompanyMedicalRepController;
+use App\Http\Controllers\Company\RewardController as CompanyRewardController;
+use App\Http\Controllers\Company\RewardRedemptionController as CompanyRewardRedemptionController;
+use App\Http\Controllers\MedicalRep\AssignedDoctorController;
+use App\Http\Controllers\MedicalRep\DrugController as MedicalRepDrugController;
+use App\Http\Controllers\MedicalRep\DrugSampleController as MedicalRepDrugSampleController;
+use App\Http\Controllers\MedicalRep\EventInvitationController as MedicalRepEventInvitationController;
+use App\Http\Controllers\MedicalRep\MeetingController as MedicalRepMeetingController;
+use App\Http\Controllers\MedicalRep\MessageController as MedicalRepMessageController;
+use App\Http\Controllers\MedicalRep\NotificationController as MedicalRepNotificationController;
+use App\Http\Controllers\MedicalRep\PostController as MedicalRepPostController;
+use App\Http\Controllers\MedicalRep\TargetController as MedicalRepTargetController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -122,3 +139,86 @@ Route::prefix('doctor')->middleware('auth:doctor-api')->group(function () {
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
 });
 
+Route::prefix('company')->middleware('auth:company-api')->group(function () {
+    Route::get('/ingredients', [CompanyActiveIngredientController::class, 'index']);
+    Route::post('/ingredients', [CompanyActiveIngredientController::class, 'store']);
+    Route::put('/ingredients/{id}', [CompanyActiveIngredientController::class, 'update']);
+    Route::delete('/ingredients/{id}', [CompanyActiveIngredientController::class, 'destroy']);
+
+    Route::get('/drugs', [CompanyDrugController::class, 'index']);
+    Route::post('/drugs', [CompanyDrugController::class, 'store']);
+    Route::get('/drugs/{id}', [CompanyDrugController::class, 'show']);
+    Route::put('/drugs/{id}', [CompanyDrugController::class, 'update']);
+    Route::delete('/drugs/{id}', [CompanyDrugController::class, 'destroy']);
+
+    Route::get('/events', [CompanyEventController::class, 'index']);
+    Route::post('/events', [CompanyEventController::class, 'store']);
+    Route::get('/events/{id}', [CompanyEventController::class, 'show']);
+    Route::put('/events/{id}', [CompanyEventController::class, 'update']);
+    Route::delete('/events/{id}', [CompanyEventController::class, 'destroy']);
+
+    Route::get('/events/{eventId}/requests', [CompanyEventRequestController::class, 'index']);
+    Route::post('/events/{eventId}/requests/{id}/approve', [CompanyEventRequestController::class, 'approve']);
+    Route::post('/events/{eventId}/requests/{id}/reject', [CompanyEventRequestController::class, 'reject']);
+
+    Route::post('/events/{eventId}/invite', [CompanyEventInvitationController::class, 'invite']);
+    Route::get('/events/{eventId}/invitations', [CompanyEventInvitationController::class, 'index']);
+
+    Route::get('/rewards', [CompanyRewardController::class, 'index']);
+    Route::post('/rewards', [CompanyRewardController::class, 'store']);
+    Route::get('/rewards/{id}', [CompanyRewardController::class, 'show']);
+    Route::put('/rewards/{id}', [CompanyRewardController::class, 'update']);
+    Route::delete('/rewards/{id}', [CompanyRewardController::class, 'destroy']);
+
+    Route::get('/redemptions', [CompanyRewardRedemptionController::class, 'index']);
+    Route::post('/redemptions/{id}/fulfill', [CompanyRewardRedemptionController::class, 'fulfill']);
+    Route::post('/redemptions/{id}/cancel', [CompanyRewardRedemptionController::class, 'cancel']);
+
+    Route::get('/reps', [CompanyMedicalRepController::class, 'index']);
+    Route::get('/reps/{id}', [CompanyMedicalRepController::class, 'show']);
+    Route::post('/reps/{id}/targets', [CompanyMedicalRepController::class, 'upsertTarget']);
+    Route::get('/reps/{id}/targets', [CompanyMedicalRepController::class, 'targets']);
+});
+
+Route::prefix('rep')->middleware('auth:rep-api')->group(function () {
+    Route::get('/doctors', [AssignedDoctorController::class, 'index']);
+    Route::get('/doctors/{id}', [AssignedDoctorController::class, 'show']);
+
+    Route::get('/meetings', [MedicalRepMeetingController::class, 'index']);
+    Route::post('/meetings', [MedicalRepMeetingController::class, 'store']);
+    Route::get('/meetings/{id}', [MedicalRepMeetingController::class, 'show']);
+    Route::post('/meetings/{id}/complete', [MedicalRepMeetingController::class, 'complete']);
+    Route::post('/meetings/{id}/cancel', [MedicalRepMeetingController::class, 'cancel']);
+
+    Route::get('/samples', [MedicalRepDrugSampleController::class, 'index']);
+    Route::get('/samples/{id}', [MedicalRepDrugSampleController::class, 'show']);
+    Route::post('/samples/{id}/approve', [MedicalRepDrugSampleController::class, 'approve']);
+    Route::post('/samples/{id}/reject', [MedicalRepDrugSampleController::class, 'reject']);
+    Route::post('/samples/{id}/deliver', [MedicalRepDrugSampleController::class, 'deliver']);
+
+    Route::get('/drugs', [MedicalRepDrugController::class, 'index']);
+    Route::get('/drugs/{id}', [MedicalRepDrugController::class, 'show']);
+
+    Route::get('/targets', [MedicalRepTargetController::class, 'index']);
+
+    Route::get('/invitations', [MedicalRepEventInvitationController::class, 'index']);
+    Route::post('/events/{eventId}/invite', [MedicalRepEventInvitationController::class, 'invite']);
+
+    Route::get('/posts', [MedicalRepPostController::class, 'index']);
+    Route::post('/posts', [MedicalRepPostController::class, 'store']);
+    Route::get('/posts/{id}', [MedicalRepPostController::class, 'show']);
+    Route::put('/posts/{id}', [MedicalRepPostController::class, 'update']);
+    Route::delete('/posts/{id}', [MedicalRepPostController::class, 'destroy']);
+    Route::post('/posts/{postId}/comments', [MedicalRepPostController::class, 'storeComment']);
+    Route::delete('/comments/{id}', [MedicalRepPostController::class, 'destroyComment']);
+    Route::post('/posts/{postId}/like', [MedicalRepPostController::class, 'like']);
+    Route::delete('/posts/{postId}/unlike', [MedicalRepPostController::class, 'unlike']);
+
+    Route::get('/messages', [MedicalRepMessageController::class, 'index']);
+    Route::post('/messages', [MedicalRepMessageController::class, 'store']);
+    Route::post('/messages/{id}/read', [MedicalRepMessageController::class, 'markAsRead']);
+
+    Route::get('/notifications', [MedicalRepNotificationController::class, 'index']);
+    Route::post('/notifications/{id}/read', [MedicalRepNotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [MedicalRepNotificationController::class, 'markAllAsRead']);
+});
