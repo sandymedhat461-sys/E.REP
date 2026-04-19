@@ -119,56 +119,69 @@
 <body @if(config('l5-swagger.defaults.ui.display.dark_mode')) id="dark-mode" @endif>
 <div id="swagger-ui"></div>
 
+@php
+    $securitySchemes = config('l5-swagger.defaults.securityDefinitions.securitySchemes', []);
+    $swaggerUiBootstrap = [
+        'urls' => collect($urlsToDocs)->map(fn ($url, $title) => ['name' => $title, 'url' => $url])->values()->all(),
+        'documentationTitle' => $documentationTitle,
+        'operationsSorter' => isset($operationsSorter) ? $operationsSorter : null,
+        'configUrl' => isset($configUrl) ? $configUrl : null,
+        'validatorUrl' => isset($validatorUrl) ? $validatorUrl : null,
+        'oauth2RedirectUrl' => route('l5-swagger.'.$documentation.'.oauth2_callback', [], $useAbsolutePath),
+        'csrfToken' => csrf_token(),
+        'docExpansion' => config('l5-swagger.defaults.ui.display.doc_expansion', 'none'),
+        'filter' => (bool) config('l5-swagger.defaults.ui.display.filter'),
+        'persistAuthorization' => config('l5-swagger.defaults.ui.authorization.persist_authorization') ? 'true' : 'false',
+        'initOAuth' => in_array('oauth2', array_column($securitySchemes, 'type'), true),
+        'usePkceWithAuthorizationCodeGrant' => (bool) config('l5-swagger.defaults.ui.authorization.oauth2.use_pkce_with_authorization_code_grant'),
+    ];
+@endphp
 <script src="{{ l5_swagger_asset($documentation, 'swagger-ui-bundle.js') }}"></script>
 <script src="{{ l5_swagger_asset($documentation, 'swagger-ui-standalone-preset.js') }}"></script>
+<script id="l5-swagger-bootstrap-json" type="application/json"><?php echo json_encode(
+    $swaggerUiBootstrap,
+    JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+); ?></script>
 <script>
-    window.onload = function() {
-        const urls = [];
+(function () {
+    window.onload = function () {
+        var cfg = JSON.parse(document.getElementById('l5-swagger-bootstrap-json').textContent);
 
-        @foreach($urlsToDocs as $title => $url)
-            urls.push({name: "{{ $title }}", url: "{{ $url }}"});
-        @endforeach
-
-        // Build a system
-        const ui = SwaggerUIBundle({
+        var ui = SwaggerUIBundle({
             dom_id: '#swagger-ui',
-            urls: urls,
-            "urls.primaryName": "{{ $documentationTitle }}",
-            operationsSorter: {!! isset($operationsSorter) ? '"' . $operationsSorter . '"' : 'null' !!},
-            configUrl: {!! isset($configUrl) ? '"' . $configUrl . '"' : 'null' !!},
-            validatorUrl: {!! isset($validatorUrl) ? '"' . $validatorUrl . '"' : 'null' !!},
-            oauth2RedirectUrl: "{{ route('l5-swagger.'.$documentation.'.oauth2_callback', [], $useAbsolutePath) }}",
-
-            requestInterceptor: function(request) {
-                request.headers['X-CSRF-TOKEN'] = '{{ csrf_token() }}';
+            urls: cfg.urls,
+            'urls.primaryName': cfg.documentationTitle,
+            operationsSorter: cfg.operationsSorter,
+            configUrl: cfg.configUrl,
+            validatorUrl: cfg.validatorUrl,
+            oauth2RedirectUrl: cfg.oauth2RedirectUrl,
+            requestInterceptor: function (request) {
+                request.headers['X-CSRF-TOKEN'] = cfg.csrfToken;
                 return request;
             },
-
             presets: [
                 SwaggerUIBundle.presets.apis,
                 SwaggerUIStandalonePreset
             ],
-
             plugins: [
                 SwaggerUIBundle.plugins.DownloadUrl
             ],
-
-            layout: "StandaloneLayout",
-            docExpansion : "{!! config('l5-swagger.defaults.ui.display.doc_expansion', 'none') !!}",
+            layout: 'StandaloneLayout',
+            docExpansion: cfg.docExpansion,
             deepLinking: true,
-            filter: {!! config('l5-swagger.defaults.ui.display.filter') ? 'true' : 'false' !!},
-            persistAuthorization: "{!! config('l5-swagger.defaults.ui.authorization.persist_authorization') ? 'true' : 'false' !!}",
+            filter: cfg.filter,
+            persistAuthorization: cfg.persistAuthorization
+        });
 
-        })
+        window.ui = ui;
 
-        window.ui = ui
-
-        @if(in_array('oauth2', array_column(config('l5-swagger.defaults.securityDefinitions.securitySchemes'), 'type')))
-        ui.initOAuth({
-            usePkceWithAuthorizationCodeGrant: "{!! (bool)config('l5-swagger.defaults.ui.authorization.oauth2.use_pkce_with_authorization_code_grant') !!}"
-        })
-        @endif
-    }
+        if (cfg.initOAuth) {
+            ui.initOAuth({
+                usePkceWithAuthorizationCodeGrant: cfg.usePkceWithAuthorizationCodeGrant
+            });
+        }
+    };
+})();
 </script>
 </body>
 </html>

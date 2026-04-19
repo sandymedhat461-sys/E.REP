@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\DB;
 
 class NotificationController extends BaseMedicalRepController
 {
+    /**
+     * @OA\Get(
+     *     path="/api/rep/notifications",
+     *     tags={"Rep - Messages"},
+     *     summary="List notifications",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function index(): JsonResponse
     {
         $rep = $this->repOrForbidden();
@@ -29,6 +39,18 @@ class NotificationController extends BaseMedicalRepController
         return $this->success(['notifications' => $notifications]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/rep/notifications/{id}/read",
+     *     tags={"Rep - Messages"},
+     *     summary="Mark notification as read",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=404, description="Not found"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function markAsRead(string $id): JsonResponse
     {
         $rep = $this->repOrForbidden();
@@ -53,6 +75,16 @@ class NotificationController extends BaseMedicalRepController
         return $this->success([], 'Marked as read');
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/rep/notifications/read-all",
+     *     tags={"Rep - Messages"},
+     *     summary="Mark all notifications as read",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function markAllAsRead(): JsonResponse
     {
         $rep = $this->repOrForbidden();

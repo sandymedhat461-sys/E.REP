@@ -10,6 +10,16 @@ use Illuminate\Http\Request;
 
 class DrugCategoryController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/admin/categories",
+     *     tags={"Admin - Categories"},
+     *     summary="List drug categories",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function index(): JsonResponse
     {
         if (!auth('admin-api')->user()) {
@@ -21,6 +31,23 @@ class DrugCategoryController extends Controller
         return $this->success(['categories' => $categories]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/admin/categories",
+     *     tags={"Admin - Categories"},
+     *     summary="Create drug category",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="line_manager_name", type="string", description="Optional")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Created"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function store(Request $request): JsonResponse
     {
         if (!auth('admin-api')->user()) {
@@ -40,6 +67,25 @@ class DrugCategoryController extends Controller
         return $this->success(['category' => $category], null, 201);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/admin/categories/{id}",
+     *     tags={"Admin - Categories"},
+     *     summary="Update drug category",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="line_manager_name", type="string", description="Optional")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=404, description="Not found"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function update(Request $request, int $id): JsonResponse
     {
         if (!auth('admin-api')->user()) {
@@ -64,6 +110,19 @@ class DrugCategoryController extends Controller
         return $this->success(['category' => $category->fresh()]);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/admin/categories/{id}",
+     *     tags={"Admin - Categories"},
+     *     summary="Delete drug category",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=404, description="Not found"),
+     *     @OA\Response(response=422, description="Category has assigned drugs"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function destroy(int $id): JsonResponse
     {
         if (!auth('admin-api')->user()) {

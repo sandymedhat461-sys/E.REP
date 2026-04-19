@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -27,5 +28,15 @@ class DoctorPoint extends Model
     public function doctor(): BelongsTo
     {
         return $this->belongsTo(Doctor::class);
+    }
+
+    protected function points(): Attribute
+    {
+        return Attribute::get(fn (): int => (int) $this->value);
+    }
+
+    protected function sourceType(): Attribute
+    {
+        return Attribute::get(fn (): string => (string) $this->source);
     }
 }

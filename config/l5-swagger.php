@@ -123,6 +123,9 @@ return [
             /**
              * analyser: defaults to \OpenApi\StaticAnalyser .
              *
+             * Docblock @OA annotations are registered at runtime in AppServiceProvider (objects
+             * cannot live here or `php artisan config:cache` will fail).
+             *
              * @see \OpenApi\scan
              */
             'analyser' => null,
