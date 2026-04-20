@@ -48,7 +48,6 @@ class EventController extends BaseCompanyController
      *             @OA\Property(property="description", type="string"),
      *             @OA\Property(property="location", type="string"),
      *             @OA\Property(property="event_date", type="string", format="date-time"),
-     *             @OA\Property(property="date", type="string", format="date-time", description="Alias for event_date"),
      *             @OA\Property(property="max_capacity", type="integer"),
      *             @OA\Property(property="status", type="string", enum={"upcoming","ongoing","completed","cancelled"}),
      *             @OA\Property(property="points_required", type="integer")
@@ -64,10 +63,6 @@ class EventController extends BaseCompanyController
         $company = $this->companyOrForbidden();
         if ($company instanceof JsonResponse) {
             return $company;
-        }
-
-        if ($request->filled('date') && !$request->filled('event_date')) {
-            $request->merge(['event_date' => $request->input('date')]);
         }
 
         $validated = $this->validateRequest($request, [
@@ -165,10 +160,6 @@ class EventController extends BaseCompanyController
         $event = Event::where('company_id', $company->id)->find($id);
         if (!$event) {
             return $this->error('Event not found', 404);
-        }
-
-        if ($request->filled('date') && !$request->filled('event_date')) {
-            $request->merge(['event_date' => $request->input('date')]);
         }
 
         $validated = $this->validateRequest($request, [

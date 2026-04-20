@@ -90,12 +90,12 @@ class MeetingController extends Controller
         }
 
         if (!$meeting->room_name) {
-            $roomName = 'erep-'.$meeting->id.'-'.Str::random(10);
+            $roomName = 'erep-' . $meeting->id . '-' . Str::random(10);
             $meeting->update(['room_name' => $roomName]);
         }
 
         return $this->success([
-            'room_url' => 'https://meet.jit.si/'.$meeting->room_name,
+            'room_url' => 'https://meet.jit.si/' . $meeting->room_name,
             'room_name' => $meeting->room_name,
         ]);
     }

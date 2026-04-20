@@ -44,7 +44,6 @@ class PostController extends BaseMedicalRepController
      *         @OA\JsonContent(
      *             @OA\Property(property="title", type="string"),
      *             @OA\Property(property="content", type="string"),
-     *             @OA\Property(property="body", type="string"),
      *             @OA\Property(property="status", type="string", enum={"published","draft"})
      *         )
      *     ),
@@ -62,21 +61,18 @@ class PostController extends BaseMedicalRepController
 
         $validated = $this->validateRequest($request, [
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string', 'required_without:body'],
-            'body' => ['nullable', 'string', 'required_without:content'],
+            'content' => ['required', 'string'],
             'status' => ['nullable', 'in:published,draft'],
         ]);
         if ($validated instanceof JsonResponse) {
             return $validated;
         }
 
-        $text = $validated['body'] ?? $validated['content'];
-
         $post = Post::create([
             'author_type' => 'medical_rep',
             'author_id' => $rep->id,
             'title' => $validated['title'],
-            'content' => $text,
+            'content' => $validated['content'],
             'status' => $validated['status'] ?? 'published',
         ]);
 
@@ -117,7 +113,6 @@ class PostController extends BaseMedicalRepController
      *         @OA\JsonContent(
      *             @OA\Property(property="title", type="string"),
      *             @OA\Property(property="content", type="string"),
-     *             @OA\Property(property="body", type="string"),
      *             @OA\Property(property="status", type="string", enum={"published","draft"})
      *         )
      *     ),
@@ -145,14 +140,13 @@ class PostController extends BaseMedicalRepController
         $validated = $this->validateRequest($request, [
             'title' => ['required', 'string', 'max:255'],
             'content' => ['nullable', 'string'],
-            'body' => ['nullable', 'string'],
             'status' => ['nullable', 'in:published,draft'],
         ]);
         if ($validated instanceof JsonResponse) {
             return $validated;
         }
 
-        $text = $validated['body'] ?? $validated['content'] ?? $post->content;
+        $text = $validated['content'] ?? $post->content;
 
         $post->update([
             'title' => $validated['title'],
