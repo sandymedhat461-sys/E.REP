@@ -1,3 +1,8 @@
+⚠️ ngrok Note:
+When using the ngrok URL, you must add this header to every request:
+ngrok-skip-browser-warning: true
+Otherwise ngrok will return an HTML warning page instead of JSON.
+
 # E-Rep API Documentation
 
 REST API for the E-Rep (medical rep / doctor / company) platform. All JSON bodies use `Content-Type: application/json` unless noted.
@@ -8,11 +13,19 @@ REST API for the E-Rep (medical rep / doctor / company) platform. All JSON bodie
 
 | Environment | Base URL |
 |-------------|----------|
-| Local (default) | `http://localhost:8000` |
-|swagger (public)| `https://embezzle-skedaddle-creatable.ngrok-free.dev`| 
-| API prefix | `/api` |
+| Local | `http://localhost:8000/api` |
+| Testing (ngrok) | `https://embezzle-skedaddle-creatable.ngrok-free.dev/api` |
 
-**Example:** Login URL = `{base}/api/auth/doctor/login` → `http://localhost:8000/api/auth/doctor/login`
+**Example:** Login URL = `{base}/auth/doctor/login` → `http://localhost:8000/api/auth/doctor/login`
+
+⚠️ Authentication:
+After login, copy the token from the response.
+Add it to every protected endpoint as a Header:
+Authorization: Bearer {your_token_here}
+
+Note: Each user type has its own token — 
+admin token only works on /admin/ routes,
+doctor token only works on /doctor/ routes, etc.
 
 ---
 
@@ -45,10 +58,10 @@ Use these only in non-production environments.
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | `admin@erep.com` | `password123` |
-| Company | `company@pharmaegypt.com` | `password123` |
-| Doctor | `doctor1@erep.com` | `password123` |
-| Medical rep | `rep1@erep.com` | `password123` |
+| Admin | `sandy@erep.com` | `password` |
+| Company | `company@pharmaegypt.com` | `password` |
+| Doctor | `doctor1@erep.com` | `password` |
+| Medical rep | `rep1@erep.com` | `password` |
 
 ---
 
@@ -96,8 +109,8 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 {
   "full_name": "Admin User",
   "email": "newadmin@erep.com",
-  "password": "password123",
-  "password_confirmation": "password123",
+  "password": "password",
+  "password_confirmation": "password",
   "phone": "+201000000099"
 }
 ```
@@ -133,8 +146,8 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 
 ```json
 {
-  "email": "admin@erep.com",
-  "password": "password123"
+  "email": "sandy@erep.com",
+  "password": "password"
 }
 ```
 
@@ -147,7 +160,7 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
     "admin": {
       "id": 1,
       "full_name": "Super Admin",
-      "email": "admin@erep.com"
+      "email": "sandy@erep.com"
     },
     "token": "2|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   }
@@ -194,7 +207,7 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
     "admin": {
       "id": 1,
       "full_name": "Super Admin",
-      "email": "admin@erep.com",
+      "email": "sandy@erep.com",
       "phone": "+201000000001"
     }
   }
@@ -217,8 +230,8 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 {
   "company_name": "New Pharma LLC",
   "email": "register@newpharma.com",
-  "password": "password123",
-  "password_confirmation": "password123",
+  "password": "password",
+  "password_confirmation": "password",
   "hotline": "+20212345678",
   "commercial_register": "CREG-EGY-2026-999"
 }
@@ -256,7 +269,7 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 ```json
 {
   "email": "company@pharmaegypt.com",
-  "password": "password123"
+  "password": "password"
 }
 ```
 
@@ -333,8 +346,8 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 {
   "full_name": "Dr. Example User",
   "email": "newdoctor@hospital.com",
-  "password": "password123",
-  "password_confirmation": "password123",
+  "password": "password",
+  "password_confirmation": "password",
   "phone": "+201155500001",
   "national_id": "29001001550001",
   "specialization": "Cardiology",
@@ -375,7 +388,7 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 ```json
 {
   "email": "doctor1@erep.com",
-  "password": "password123"
+  "password": "password"
 }
 ```
 
@@ -483,8 +496,8 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 {
   "full_name": "New Rep Name",
   "email": "newrep@company.com",
-  "password": "password123",
-  "password_confirmation": "password123",
+  "password": "password",
+  "password_confirmation": "password",
   "phone": "+201200000099",
   "national_id": "29002002002999",
   "company_id": 1,
@@ -526,7 +539,7 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 ```json
 {
   "email": "rep1@erep.com",
-  "password": "password123"
+  "password": "password"
 }
 ```
 
