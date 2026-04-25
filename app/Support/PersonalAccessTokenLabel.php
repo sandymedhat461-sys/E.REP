@@ -20,6 +20,6 @@ final class PersonalAccessTokenLabel
             $name = 'User';
         }
 
-        return "{$name} ({$role})";
+        return "{$name}";
     }
 }

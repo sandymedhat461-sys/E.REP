@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Admin;
 use App\Models\Company;
 use App\Models\Doctor;
 use App\Models\MedicalRep;
@@ -43,9 +44,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Relation::morphMap([
+            'admin' => Admin::class,
+            'company' => Company::class,
             'doctor' => Doctor::class,
             'medical_rep' => MedicalRep::class,
-            'company' => Company::class,
+            // Back-compat alias (older rows may store "rep" as type)
             'rep' => MedicalRep::class,
         ]);
 
