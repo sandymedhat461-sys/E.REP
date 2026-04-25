@@ -1160,12 +1160,11 @@ All routes require: `Authorization: Bearer {company_token}`
 
 ```json
 {
-  "doctor_ids": [1, 2],
-  "rep_ids": [1]
+  "doctor_ids": [1, 2]
 }
 ```
 
-**Success (200):** `{ "success": true, "data": { "invitations_sent": 3 } }`
+**Success (201):** `{ "success": true, "data": { "invitations": [{ "id": 11, "status": "pending", "invited_at": "2026-04-25T21:00:00Z" }] } }`
 
 **Errors:** `401`, `404`, `422`.
 
@@ -1178,6 +1177,8 @@ All routes require: `Authorization: Bearer {company_token}`
 - **Auth:** Yes — Company
 
 **Success (200):** `{ "success": true, "data": { "invitations": [] } }`
+
+**Notes:** Invitation records include `invited_at`.
 
 **Errors:** `401`, `404`.
 
@@ -1260,9 +1261,51 @@ All routes require: `Authorization: Bearer {company_token}`
 - **URL:** `/api/company/redemptions`
 - **Auth:** Yes — Company
 
-**Success (200):** `{ "success": true, "data": { "redemptions": [] } }`
+**Success (200):** `{ "success": true, "data": { "redemptions": [{ "id": 1, "status": "pending|approved|rejected|delivered|fulfilled|cancelled" }] } }`
 
 **Errors:** `401`.
+
+---
+
+### Company approve redemption
+
+- **Method:** `POST`
+- **URL:** `/api/company/redemptions/{id}/approve`
+- **Auth:** Yes — Company
+
+**Body:** `{}`
+
+**Success (200):** `{ "success": true, "data": { "redemption": { "status": "approved" } } }`
+
+**Errors:** `401`, `404`.
+
+---
+
+### Company reject redemption
+
+- **Method:** `POST`
+- **URL:** `/api/company/redemptions/{id}/reject`
+- **Auth:** Yes — Company
+
+**Body:** `{}`
+
+**Success (200):** `{ "success": true, "data": { "redemption": { "status": "rejected" } } }`
+
+**Errors:** `401`, `404`.
+
+---
+
+### Company deliver redemption
+
+- **Method:** `POST`
+- **URL:** `/api/company/redemptions/{id}/deliver`
+- **Auth:** Yes — Company
+
+**Body:** `{}`
+
+**Success (200):** `{ "success": true, "data": { "redemption": { "status": "delivered" } } }`
+
+**Errors:** `401`, `404`.
 
 ---
 
@@ -1696,7 +1739,7 @@ All routes require: `Authorization: Bearer {doctor_token}`
 }
 ```
 
-**Success (201):** `{ "success": true, "data": { "sample": { "id": 1 } } }`
+**Success (201):** `{ "success": true, "data": { "sample": { "id": 1, "status": "pending", "requested_at": "2026-04-25T21:00:00Z" } } }`
 
 **Errors:** `401`, `422`.
 
@@ -1794,14 +1837,13 @@ All routes require: `Authorization: Bearer {doctor_token}`
 
 ```json
 {
-  "event_id": 1,
-  "message": "I would like to attend"
+  "event_id": 1
 }
 ```
 
 **Success (201):** `{ "success": true, "data": { "request": { "id": 1 } } }`
 
-**Errors:** `401`, `422`.
+**Errors:** `401`, `404`, `422` (already requested, already accepted invitation, or insufficient points for event `points_required`).
 
 ---
 
@@ -1827,6 +1869,8 @@ All routes require: `Authorization: Bearer {doctor_token}`
 
 **Success (200):** `{ "success": true, "message": "Invitation accepted" }`
 
+**Notes:** Updates invitation `responded_at` timestamp when accepted.
+
 **Errors:** `401`, `404`, `422`.
 
 ---
@@ -1840,6 +1884,8 @@ All routes require: `Authorization: Bearer {doctor_token}`
 **Body:** `{ "reason": "Schedule conflict" }` (optional)
 
 **Success (200):** `{ "success": true, "message": "Invitation declined" }`
+
+**Notes:** Updates invitation `responded_at` timestamp when declined.
 
 **Errors:** `401`, `404`.
 
@@ -2245,7 +2291,8 @@ All routes require: `Authorization: Bearer {rep_token}`
   "data": {
     "meeting": {
       "id": 1,
-      "status": "completed"
+      "status": "completed",
+      "points_awarded": 10
     }
   }
 }
@@ -2389,6 +2436,8 @@ All routes require: `Authorization: Bearer {rep_token}`
 
 **Success (200):** `{ "success": true, "data": { "invitations": [] } }`
 
+**Notes:** Invitation records include `invited_at`.
+
 **Errors:** `401`.
 
 ---
@@ -2403,11 +2452,11 @@ All routes require: `Authorization: Bearer {rep_token}`
 
 ```json
 {
-  "doctor_ids": [1, 2]
+  "doctor_id": 1
 }
 ```
 
-**Success (200):** `{ "success": true, "data": { "invited": 2 } }`
+**Success (201):** `{ "success": true, "data": { "invitation": { "id": 10, "status": "pending", "invited_at": "2026-04-25T21:00:00Z" } } }`
 
 **Errors:** `401`, `404`, `422`.
 
