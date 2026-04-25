@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
+use App\Support\PersonalAccessTokenLabel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,11 +18,15 @@ class DoctorAuthController extends Controller
      *     path="/api/auth/doctor/register",
      *     tags={"Auth - Doctor"},
      *     summary="Register doctor (multipart: syndicate_id_image required)",
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
      *                 required={"full_name","phone","national_id","email","password","password_confirmation","specialization","hospital_name","syndicate_id","syndicate_id_image"},
+     *
      *                 @OA\Property(property="full_name", type="string"),
      *                 @OA\Property(property="phone", type="string"),
      *                 @OA\Property(property="national_id", type="string"),
@@ -36,6 +41,7 @@ class DoctorAuthController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=201, description="Created"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -98,12 +104,16 @@ class DoctorAuthController extends Controller
      *     path="/api/auth/doctor/login",
      *     tags={"Auth - Doctor"},
      *     summary="Doctor login",
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="email", type="string", example="doctor1@erep.com"),
      *             @OA\Property(property="password", type="string", example="password123")
      *         )
      *     ),
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Invalid credentials"),
      *     @OA\Response(response=403, description="Pending or blocked"),
@@ -129,7 +139,7 @@ class DoctorAuthController extends Controller
             $data = $validator->validated();
             $doctor = Doctor::where('email', $data['email'])->first();
 
-            if (!$doctor || !Hash::check($data['password'], (string) $doctor->password)) {
+            if (! $doctor || ! Hash::check($data['password'], (string) $doctor->password)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid credentials',
@@ -150,7 +160,10 @@ class DoctorAuthController extends Controller
                 ], 403);
             }
 
-            $token = $doctor->createToken('doctor-token')->plainTextToken;
+            $token = $doctor->createToken(PersonalAccessTokenLabel::make(
+                (string) $doctor->full_name,
+                PersonalAccessTokenLabel::ROLE_DOCTOR
+            ))->plainTextToken;
 
             return response()->json([
                 'success' => true,
@@ -173,6 +186,7 @@ class DoctorAuthController extends Controller
      *     tags={"Auth - Doctor"},
      *     summary="Doctor logout",
      *     security={{"bearerAuth":{}}},
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
@@ -193,6 +207,7 @@ class DoctorAuthController extends Controller
      *     tags={"Auth - Doctor"},
      *     summary="Current doctor",
      *     security={{"bearerAuth":{}}},
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
@@ -212,11 +227,15 @@ class DoctorAuthController extends Controller
      *     path="/api/auth/doctor/check-syndicate",
      *     tags={"Auth - Doctor"},
      *     summary="Check syndicate ID availability",
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="syndicate_id", type="string", example="SYN001")
      *         )
      *     ),
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -240,9 +259,8 @@ class DoctorAuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'available' => !$exists,
+                'available' => ! $exists,
             ],
         ]);
     }
 }
-

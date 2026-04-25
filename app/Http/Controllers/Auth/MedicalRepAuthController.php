@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\MedicalRep;
+use App\Support\PersonalAccessTokenLabel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,11 +18,15 @@ class MedicalRepAuthController extends Controller
      *     path="/api/auth/rep/register",
      *     tags={"Auth - Rep"},
      *     summary="Register medical rep (multipart: company_id_image required)",
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
      *                 required={"full_name","phone","national_id","email","password","password_confirmation","company_id","company_name","company_id_image"},
+     *
      *                 @OA\Property(property="full_name", type="string"),
      *                 @OA\Property(property="phone", type="string"),
      *                 @OA\Property(property="national_id", type="string"),
@@ -35,6 +40,7 @@ class MedicalRepAuthController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=201, description="Created"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -96,12 +102,16 @@ class MedicalRepAuthController extends Controller
      *     path="/api/auth/rep/login",
      *     tags={"Auth - Rep"},
      *     summary="Medical rep login",
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="email", type="string", example="rep1@erep.com"),
      *             @OA\Property(property="password", type="string", example="password123")
      *         )
      *     ),
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Invalid credentials"),
      *     @OA\Response(response=403, description="Pending or blocked"),
@@ -127,7 +137,7 @@ class MedicalRepAuthController extends Controller
             $data = $validator->validated();
             $rep = MedicalRep::where('email', $data['email'])->first();
 
-            if (!$rep || !Hash::check($data['password'], (string) $rep->password)) {
+            if (! $rep || ! Hash::check($data['password'], (string) $rep->password)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid credentials',
@@ -148,7 +158,10 @@ class MedicalRepAuthController extends Controller
                 ], 403);
             }
 
-            $token = $rep->createToken('rep-token')->plainTextToken;
+            $token = $rep->createToken(PersonalAccessTokenLabel::make(
+                (string) $rep->full_name,
+                PersonalAccessTokenLabel::ROLE_MEDICAL_REP
+            ))->plainTextToken;
 
             return response()->json([
                 'success' => true,
@@ -171,6 +184,7 @@ class MedicalRepAuthController extends Controller
      *     tags={"Auth - Rep"},
      *     summary="Medical rep logout",
      *     security={{"bearerAuth":{}}},
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
@@ -191,6 +205,7 @@ class MedicalRepAuthController extends Controller
      *     tags={"Auth - Rep"},
      *     summary="Current medical rep",
      *     security={{"bearerAuth":{}}},
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
@@ -205,4 +220,3 @@ class MedicalRepAuthController extends Controller
         ]);
     }
 }
-

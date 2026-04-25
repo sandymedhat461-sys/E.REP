@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Support\PersonalAccessTokenLabel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,11 +18,15 @@ class CompanyAuthController extends Controller
      *     path="/api/auth/company/register",
      *     tags={"Auth - Company"},
      *     summary="Register company (multipart: company_id_image required)",
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
      *                 required={"company_name","email","password","password_confirmation","hotline","commercial_register","company_id_image"},
+     *
      *                 @OA\Property(property="company_name", type="string"),
      *                 @OA\Property(property="email", type="string", format="email"),
      *                 @OA\Property(property="password", type="string", format="password"),
@@ -33,6 +38,7 @@ class CompanyAuthController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=201, description="Created"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -92,12 +98,16 @@ class CompanyAuthController extends Controller
      *     path="/api/auth/company/login",
      *     tags={"Auth - Company"},
      *     summary="Company login",
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="email", type="string", example="company@pharmaegypt.com"),
      *             @OA\Property(property="password", type="string", example="password123")
      *         )
      *     ),
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Invalid credentials"),
      *     @OA\Response(response=403, description="Pending or blocked"),
@@ -123,7 +133,7 @@ class CompanyAuthController extends Controller
             $data = $validator->validated();
             $company = Company::where('email', $data['email'])->first();
 
-            if (!$company || !Hash::check($data['password'], (string) $company->password)) {
+            if (! $company || ! Hash::check($data['password'], (string) $company->password)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid credentials',
@@ -151,7 +161,10 @@ class CompanyAuthController extends Controller
                 ], 403);
             }
 
-            $token = $company->createToken('company-token')->plainTextToken;
+            $token = $company->createToken(PersonalAccessTokenLabel::make(
+                (string) $company->company_name,
+                PersonalAccessTokenLabel::ROLE_COMPANY
+            ))->plainTextToken;
 
             return response()->json([
                 'success' => true,
@@ -174,6 +187,7 @@ class CompanyAuthController extends Controller
      *     tags={"Auth - Company"},
      *     summary="Company logout",
      *     security={{"bearerAuth":{}}},
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
@@ -194,6 +208,7 @@ class CompanyAuthController extends Controller
      *     tags={"Auth - Company"},
      *     summary="Current company",
      *     security={{"bearerAuth":{}}},
+     *
      *     @OA\Response(response=200, description="Success"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
@@ -208,4 +223,3 @@ class CompanyAuthController extends Controller
         ]);
     }
 }
-
