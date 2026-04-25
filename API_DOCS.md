@@ -815,11 +815,43 @@ All routes require: `Authorization: Bearer {company_token}`
 {
   "success": true,
   "data": {
-    "stats": {
-      "drugs_count": 12,
-      "events_count": 3,
-      "reps_count": 2
-    }
+    "drugs": {
+      "total": 12,
+      "by_category": []
+    },
+    "reps": {
+      "total": 2,
+      "approved": 2,
+      "pending": 0
+    },
+    "events": {
+      "total": 3,
+      "upcoming": 1,
+      "completed": 2,
+      "total_attendees": 10
+    },
+    "samples": {
+      "total_requests": 7,
+      "pending": 3,
+      "delivered": 4,
+      "by_status": [
+        { "status": "pending", "count": 3 },
+        { "status": "delivered", "count": 4 }
+      ],
+      "top_requested_drugs": [
+        {
+          "drug_id": 5,
+          "requests_count": 4,
+          "drug": { "id": 5, "market_name": "Example Drug" }
+        }
+      ]
+    },
+    "rewards": {
+      "total": 5,
+      "pending_redemptions": 1
+    },
+    "rep_performance": [],
+    "top_drugs": []
   }
 }
 ```
@@ -1664,8 +1696,7 @@ All routes require: `Authorization: Bearer {doctor_token}`
 ```json
 {
   "drug_id": 3,
-  "rep_id": 1,
-  "notes": "For clinic stock"
+  "quantity": 2
 }
 ```
 
@@ -2321,6 +2352,8 @@ All routes require: `Authorization: Bearer {rep_token}`
 - **Method:** `GET`
 - **URL:** `/api/rep/drugs`
 - **Auth:** Yes — Rep
+
+**Notes:** Returns **assigned active drugs only** (via `rep_drug_assignments`).
 
 **Success (200):** `{ "success": true, "data": { "drugs": [] } }`
 

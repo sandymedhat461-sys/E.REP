@@ -93,6 +93,23 @@ class DashboardController extends BaseCompanyController
             ->where('status', 'delivered')
             ->count();
 
+        $sampleStats = DrugSample::whereHas('drug', function ($q) use ($company) {
+            $q->where('company_id', $company->id);
+        })
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->get();
+
+        $topRequestedDrugs = DrugSample::whereHas('drug', function ($q) use ($company) {
+            $q->where('company_id', $company->id);
+        })
+            ->selectRaw('drug_id, COUNT(*) as requests_count')
+            ->groupBy('drug_id')
+            ->orderByDesc('requests_count')
+            ->with('drug:id,market_name')
+            ->limit(5)
+            ->get();
+
         $rewardsTotal = Reward::where('company_id', $companyId)->count();
         $pendingRedemptions = RewardRedemption::query()
             ->where('status', 'pending')
@@ -178,6 +195,8 @@ class DashboardController extends BaseCompanyController
                 'total_requests' => $samplesTotal,
                 'pending' => $samplesPending,
                 'delivered' => $samplesDelivered,
+                'by_status' => $sampleStats,
+                'top_requested_drugs' => $topRequestedDrugs,
             ],
             'rewards' => [
                 'total' => $rewardsTotal,

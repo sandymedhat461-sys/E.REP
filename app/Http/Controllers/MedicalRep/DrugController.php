@@ -4,6 +4,7 @@ namespace App\Http\Controllers\MedicalRep;
 
 use App\Models\Drug;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class DrugController extends BaseMedicalRepController
 {
@@ -17,15 +18,18 @@ class DrugController extends BaseMedicalRepController
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $rep = $this->repOrForbidden();
         if ($rep instanceof JsonResponse) {
             return $rep;
         }
 
-        $drugs = Drug::where('category_id', $rep->category_id)
-            ->with(['company:id,company_name', 'category:id,name'])
+        $drugs = Drug::with(['category', 'ingredients'])
+            ->whereHas('repAssignments', function ($q) use ($rep) {
+                $q->where('rep_id', $rep->id);
+            })
+            ->where('status', 'active')
             ->get();
 
         return $this->success(['drugs' => $drugs]);
