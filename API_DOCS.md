@@ -718,8 +718,7 @@ All routes require: `Authorization: Bearer {admin_token}`
     "categories": [
       {
         "id": 1,
-        "name": "Cardiology",
-        "line_manager_name": "Dr. Ahmed Hassan"
+        "name": "Cardiology"
       }
     ]
   }
@@ -740,8 +739,7 @@ All routes require: `Authorization: Bearer {admin_token}`
 
 ```json
 {
-  "name": "Endocrinology",
-  "line_manager_name": "Dr. Example Manager"
+  "name": "Endocrinology"
 }
 ```
 
@@ -753,8 +751,7 @@ All routes require: `Authorization: Bearer {admin_token}`
   "data": {
     "category": {
       "id": 6,
-      "name": "Endocrinology",
-      "line_manager_name": "Dr. Example Manager"
+      "name": "Endocrinology"
     }
   }
 }
@@ -774,8 +771,7 @@ All routes require: `Authorization: Bearer {admin_token}`
 
 ```json
 {
-  "name": "Endocrinology (updated)",
-  "line_manager_name": "Dr. New Manager"
+  "name": "Endocrinology (updated)"
 }
 ```
 

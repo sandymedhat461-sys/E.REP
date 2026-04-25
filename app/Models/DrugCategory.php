@@ -11,7 +11,6 @@ class DrugCategory extends Model
 
     protected $fillable = [
         'name',
-        'line_manager_name',
     ];
 
     public function drugs(): HasMany
