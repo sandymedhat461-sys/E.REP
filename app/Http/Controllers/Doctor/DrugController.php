@@ -16,7 +16,7 @@ class DrugController extends Controller
         $doctorId = (int) $request->user()->id;
 
         $query = Drug::query()
-            ->with(['company:id,company_name', 'category:id,name'])
+            ->with(['company:id,company_name', 'category:id,name', 'activeIngredients:id,name'])
             ->withAvg('drugReviews as average_rating', 'rating');
 
         if ($request->filled('search')) {
@@ -29,7 +29,7 @@ class DrugController extends Controller
             $query->where('company_id', $request->integer('company_id'));
         }
 
-        $drugs = $query->paginate(15);
+        $drugs = $query->paginate(100);
         $drugs->getCollection()->transform(function (Drug $drug) use ($doctorId) {
             $drug->is_favorite = Favorite::where('doctor_id', $doctorId)->where('drug_id', $drug->id)->exists();
             return $drug;
