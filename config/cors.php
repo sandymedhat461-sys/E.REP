@@ -2,13 +2,19 @@
 
 $corsOrigins = env('CORS_ALLOWED_ORIGINS');
 if ($corsOrigins === null || $corsOrigins === '') {
-    $allowedOrigins = env('APP_ENV') === 'production' ? ['*'] : ['http://localhost:3000'];
+    $allowedOrigins = env('APP_ENV') === 'production' ? ['*'] : [
+        'http://localhost:3000',
+        'http://localhost:5173',
+    ];
 } elseif (trim((string) $corsOrigins) === '*') {
     $allowedOrigins = ['*'];
 } else {
     $allowedOrigins = array_values(array_filter(array_map('trim', explode(',', (string) $corsOrigins))));
     if ($allowedOrigins === []) {
-        $allowedOrigins = ['http://localhost:3000'];
+        $allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:5173',
+        ];
     }
 }
 
