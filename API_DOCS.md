@@ -1619,6 +1619,8 @@ All routes require: `Authorization: Bearer {doctor_token}`
 
 **Success (200):** `{ "success": true, "data": { "drugs": [] } }`
 
+**Notes:** Includes `company`, `category`, and `activeIngredients` (`id`, `name`) for each drug. Pagination size is `100` per page.
+
 **Errors:** `401`.
 
 ---
@@ -2009,6 +2011,8 @@ All routes require: `Authorization: Bearer {doctor_token}`
 - **Auth:** Yes — Doctor
 
 **Success (200):** `{ "success": true, "data": { "post": {} } }`
+
+**Notes:** Post payload includes both `likes_count` and `comments_count`.
 
 **Errors:** `401`, `404`.
 
