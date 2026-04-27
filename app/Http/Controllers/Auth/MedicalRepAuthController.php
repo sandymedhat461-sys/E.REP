@@ -13,38 +13,7 @@ use Throwable;
 
 class MedicalRepAuthController extends Controller
 {
-    /**
-     * @OA\Post(
-     *     path="/api/auth/rep/register",
-     *     tags={"Auth - Rep"},
-     *     summary="Register medical rep (multipart: company_id_image required)",
-     *
-     *     @OA\RequestBody(
-     *
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *
-     *             @OA\Schema(
-     *                 required={"full_name","phone","national_id","email","password","password_confirmation","company_id","company_name","company_id_image"},
-     *
-     *                 @OA\Property(property="full_name", type="string"),
-     *                 @OA\Property(property="phone", type="string"),
-     *                 @OA\Property(property="national_id", type="string"),
-     *                 @OA\Property(property="email", type="string", format="email"),
-     *                 @OA\Property(property="password", type="string", format="password"),
-     *                 @OA\Property(property="password_confirmation", type="string", format="password"),
-     *                 @OA\Property(property="company_id", type="integer", example=1),
-     *                 @OA\Property(property="company_name", type="string"),
-     *                 @OA\Property(property="profile_image", type="string", format="binary"),
-     *                 @OA\Property(property="company_id_image", type="string", format="binary")
-     *             )
-     *         )
-     *     ),
-     *
-     *     @OA\Response(response=201, description="Created"),
-     *     @OA\Response(response=422, description="Validation error")
-     * )
-     */
+   
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -97,27 +66,7 @@ class MedicalRepAuthController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/auth/rep/login",
-     *     tags={"Auth - Rep"},
-     *     summary="Medical rep login",
-     *
-     *     @OA\RequestBody(
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(property="email", type="string", example="rep1@erep.com"),
-     *             @OA\Property(property="password", type="string", example="password123")
-     *         )
-     *     ),
-     *
-     *     @OA\Response(response=200, description="Success"),
-     *     @OA\Response(response=401, description="Invalid credentials"),
-     *     @OA\Response(response=403, description="Pending or blocked"),
-     *     @OA\Response(response=422, description="Validation error")
-     * )
-     */
+   
     public function login(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -178,17 +127,7 @@ class MedicalRepAuthController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/auth/rep/logout",
-     *     tags={"Auth - Rep"},
-     *     summary="Medical rep logout",
-     *     security={{"bearerAuth":{}}},
-     *
-     *     @OA\Response(response=200, description="Success"),
-     *     @OA\Response(response=401, description="Unauthenticated")
-     * )
-     */
+   
     public function logout(Request $request): JsonResponse
     {
         $request->user()?->currentAccessToken()?->delete();
@@ -199,17 +138,7 @@ class MedicalRepAuthController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/auth/rep/me",
-     *     tags={"Auth - Rep"},
-     *     summary="Current medical rep",
-     *     security={{"bearerAuth":{}}},
-     *
-     *     @OA\Response(response=200, description="Success"),
-     *     @OA\Response(response=401, description="Unauthenticated")
-     * )
-     */
+   
     public function me(Request $request): JsonResponse
     {
         return response()->json([

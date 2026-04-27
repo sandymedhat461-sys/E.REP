@@ -44,12 +44,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Relation::morphMap([
-            'admin' => Admin::class,
-            'company' => Company::class,
-            'doctor' => Doctor::class,
-            'medical_rep' => MedicalRep::class,
-            // Back-compat alias (older rows may store "rep" as type)
-            'rep' => MedicalRep::class,
+            'doctor' => \App\Models\Doctor::class,
+            'company' => \App\Models\Company::class,
+            'medical_rep' => \App\Models\MedicalRep::class,
+            'admin' => \App\Models\Admin::class,
         ]);
 
         $this->app->booted(function () {

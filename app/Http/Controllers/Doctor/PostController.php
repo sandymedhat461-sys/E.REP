@@ -56,6 +56,7 @@ class PostController extends Controller
         $post = Post::query()
             ->with(['author', 'comments.user'])
             ->withCount('postLikes as likes_count')
+            ->withCount('comments as comments_count')
             ->find($id);
 
         if (!$post) {
