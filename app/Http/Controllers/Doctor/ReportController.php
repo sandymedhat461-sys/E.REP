@@ -29,7 +29,7 @@ class ReportController extends Controller
                 ->with(['rep:id,full_name'])
                 ->get(),
             'samples' => DrugSample::where('doctor_id', $doctor->id)
-                ->with(['drug:id,name,market_name'])
+                ->with(['drug:id,market_name'])
                 ->get(),
             'events' => EventRequest::where('doctor_id', $doctor->id)
                 ->where('status', 'approved')

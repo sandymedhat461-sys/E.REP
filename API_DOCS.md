@@ -967,7 +967,6 @@ All routes require: `Authorization: Bearer {company_token}`
     "drugs": [
       {
         "id": 1,
-        "name": "Example Drug",
         "market_name": "BrandX",
         "status": "active"
       }
@@ -990,13 +989,14 @@ All routes require: `Authorization: Bearer {company_token}`
 
 ```json
 {
-  "name": "New Drug",
   "market_name": "BrandY",
   "category_id": 1,
   "ingredient_ids": [1, 2],
   "description": "Indications and usage"
 }
 ```
+
+`ingredient_ids` maps to `drug_ingredients.ingredient_id` records (not `active_ingredient_id`).
 
 **Success (201):** `{ "success": true, "data": { "drug": { "id": 5 } } }`
 
@@ -1515,10 +1515,13 @@ All routes require: `Authorization: Bearer {company_token}`
 
 ```json
 {
-  "body": "Company announcement text",
-  "tag_ids": [1, 2]
+  "title": "Company announcement title",
+  "content": "Company announcement text",
+  "tag_id": 2
 }
 ```
+
+`tag_id` must exist in the `tags` table. Tags are linked through the `post_tags` pivot (`post_id`, `tag_id`).
 
 **Success (201):** `{ "success": true, "data": { "post": { "id": 1 } } }`
 
@@ -1532,7 +1535,23 @@ All routes require: `Authorization: Bearer {company_token}`
 - **URL:** `/api/company/posts/{id}`
 - **Auth:** Yes — Company
 
-**Success (200):** `{ "success": true, "data": { "post": {} } }`
+**Success (200):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "post": {
+      "id": 1,
+      "title": "Company announcement title",
+      "content": "Company announcement text",
+      "tags": [
+        { "id": 1, "name": "Cardiology", "slug": "cardiology" }
+      ]
+    }
+  }
+}
+```
 
 **Errors:** `401`, `404`.
 
@@ -2038,10 +2057,13 @@ Creates a redemption if the authenticated doctor’s total points (sum of `docto
 
 ```json
 {
-  "body": "Sharing clinical experience",
-  "tag_ids": [1]
+  "title": "Clinical experience",
+  "content": "Sharing clinical experience",
+  "tag_id": 1
 }
 ```
+
+`tag_id` must reference an existing `tags.id`; post-tag linkage is many-to-many via `post_tags`.
 
 **Success (201):** `{ "success": true, "data": { "post": { "id": 1 } } }`
 
@@ -2055,7 +2077,23 @@ Creates a redemption if the authenticated doctor’s total points (sum of `docto
 - **URL:** `/api/doctor/posts/{id}`
 - **Auth:** Yes — Doctor
 
-**Success (200):** `{ "success": true, "data": { "post": {} } }`
+**Success (200):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "post": {
+      "id": 1,
+      "title": "Clinical experience",
+      "content": "Sharing clinical experience",
+      "tags": [
+        { "id": 1, "name": "Cardiology", "slug": "cardiology" }
+      ]
+    }
+  }
+}
+```
 
 **Notes:** Post payload includes both `likes_count` and `comments_count`.
 
@@ -2530,7 +2568,9 @@ All routes require: `Authorization: Bearer {rep_token}`
 - **URL:** `/api/rep/posts`
 - **Auth:** Yes — Rep
 
-**Body:** `{ "body": "Rep update", "tag_ids": [] }`
+**Body:** `{ "title": "Rep update", "content": "Rep post text", "tag_id": 3 }`
+
+`tag_id` must be an existing tag; post tags are a relation via `post_tags` (`post_id`, `tag_id`).
 
 **Success (201):** `{ "success": true, "data": { "post": { "id": 1 } } }`
 
@@ -2544,7 +2584,23 @@ All routes require: `Authorization: Bearer {rep_token}`
 - **URL:** `/api/rep/posts/{id}`
 - **Auth:** Yes — Rep
 
-**Success (200):** `{ "success": true, "data": { "post": {} } }`
+**Success (200):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "post": {
+      "id": 1,
+      "title": "Rep update",
+      "content": "Rep post text",
+      "tags": [
+        { "id": 1, "name": "Cardiology", "slug": "cardiology" }
+      ]
+    }
+  }
+}
+```
 
 **Errors:** `401`, `404`.
 

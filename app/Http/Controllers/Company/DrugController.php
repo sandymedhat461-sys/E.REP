@@ -34,7 +34,7 @@ class DrugController extends BaseCompanyController
         }
 
         $validated = $this->validateRequest($request, [
-            'name' => ['required', 'string', 'max:255'],
+            'market_name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'category_id' => ['required', 'exists:drug_categories,id'],
             'image' => ['nullable', 'image', 'max:2048'],
@@ -51,16 +51,16 @@ class DrugController extends BaseCompanyController
             $imagePath = $request->file('image')->store('drugs', 'public');
         }
 
-        $name = $validated['name'];
+        $marketName = $validated['market_name'];
         $payload = [
             'company_id' => $company->id,
-            'market_name' => $name,
+            'market_name' => $marketName,
             'description' => $validated['description'] ?? null,
             'category_id' => $validated['category_id'],
             'image' => $imagePath,
         ];
         if (Schema::hasColumn('drugs', 'name')) {
-            $payload['name'] = $name;
+            $payload['name'] = $marketName;
         }
         if (Schema::hasColumn('drugs', 'status')) {
             $payload['status'] = $validated['status'] ?? 'active';
@@ -109,7 +109,7 @@ class DrugController extends BaseCompanyController
         }
 
         $validated = $this->validateRequest($request, [
-            'name' => ['required', 'string', 'max:255'],
+            'market_name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'category_id' => ['required', 'exists:drug_categories,id'],
             'image' => ['nullable', 'image', 'max:2048'],
@@ -121,14 +121,14 @@ class DrugController extends BaseCompanyController
             return $validated;
         }
 
-        $name = $validated['name'];
+        $marketName = $validated['market_name'];
         $data = [
-            'market_name' => $name,
+            'market_name' => $marketName,
             'description' => $validated['description'] ?? null,
             'category_id' => $validated['category_id'],
         ];
         if (Schema::hasColumn('drugs', 'name')) {
-            $data['name'] = $name;
+            $data['name'] = $marketName;
         }
         if (Schema::hasColumn('drugs', 'status')) {
             $data['status'] = $validated['status'] ?? $drug->status ?? 'active';

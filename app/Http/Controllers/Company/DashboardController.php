@@ -159,7 +159,7 @@ class DashboardController extends BaseCompanyController
             ->get()
             ->map(fn (Drug $d) => [
                 'drug_id' => $d->id,
-                'name' => $d->name ?? $d->market_name,
+                'market_name' => $d->market_name,
                 'sample_requests' => $d->drug_samples_count,
             ])
             ->all();
