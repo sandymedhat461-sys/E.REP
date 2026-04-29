@@ -46,5 +46,10 @@ class Post extends Model
     {
         return $this->belongsToMany(Tag::class, 'post_tags');
     }
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(PostReport::class);
+    }
 }
 

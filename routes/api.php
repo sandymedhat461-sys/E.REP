@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\DoctorAuthController;
 use App\Http\Controllers\Auth\MedicalRepAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DrugCategoryController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Doctor\CommentController;
 use App\Http\Controllers\Doctor\DoctorPointController;
@@ -82,6 +83,15 @@ Route::prefix('admin')->middleware('auth:admin-api')->group(function () {
     Route::post('/categories', [DrugCategoryController::class, 'store']);
     Route::put('/categories/{id}', [DrugCategoryController::class, 'update']);
     Route::delete('/categories/{id}', [DrugCategoryController::class, 'destroy']);
+
+    Route::get('/posts/reported', [AdminPostController::class, 'reportedPosts']);
+    Route::delete('/posts/{id}', [AdminPostController::class, 'destroy']);
+
+    Route::get('/doctors', [UserManagementController::class, 'listDoctors']);
+    Route::get('/reps', [UserManagementController::class, 'listReps']);
+    Route::get('/companies', [UserManagementController::class, 'listCompanies']);
+    Route::post('/companies', [UserManagementController::class, 'createCompany']);
+    Route::post('/reps', [UserManagementController::class, 'createRep']);
 });
 
 Route::prefix('doctor')->middleware('auth:doctor-api')->group(function () {
@@ -127,6 +137,7 @@ Route::prefix('doctor')->middleware('auth:doctor-api')->group(function () {
     Route::get('/posts/{id}', [PostController::class, 'show']);
     Route::put('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+    Route::post('/posts/{id}/report', [PostController::class, 'report']);
 
     Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
     Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
@@ -237,6 +248,7 @@ Route::prefix('rep')->middleware('auth:rep-api')->group(function () {
     Route::get('/posts/{id}', [MedicalRepPostController::class, 'show']);
     Route::put('/posts/{id}', [MedicalRepPostController::class, 'update']);
     Route::delete('/posts/{id}', [MedicalRepPostController::class, 'destroy']);
+    Route::post('/posts/{id}/report', [MedicalRepPostController::class, 'report']);
     Route::post('/posts/{postId}/comments', [MedicalRepPostController::class, 'storeComment']);
     Route::delete('/comments/{id}', [MedicalRepPostController::class, 'destroyComment']);
     Route::post('/posts/{postId}/like', [MedicalRepPostController::class, 'like']);

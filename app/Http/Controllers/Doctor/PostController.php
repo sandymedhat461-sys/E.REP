@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Doctor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\PostReport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -116,5 +117,29 @@ class PostController extends Controller
         $post->delete();
 
         return $this->success([], 'Post deleted');
+    }
+
+    public function report(Request $request, int $id): JsonResponse
+    {
+        $post = Post::find($id);
+        if (!$post) {
+            return $this->error('Post not found', 404);
+        }
+
+        $validated = $this->validateRequest($request, [
+            'reason' => ['nullable', 'string', 'max:500'],
+        ]);
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
+
+        PostReport::create([
+            'post_id' => $post->id,
+            'reporter_id' => $request->user()->id,
+            'reporter_type' => 'doctor',
+            'reason' => $validated['reason'] ?? null,
+        ]);
+
+        return $this->success([], 'Post reported', 201);
     }
 }

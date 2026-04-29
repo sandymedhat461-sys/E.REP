@@ -5,6 +5,7 @@ namespace App\Http\Controllers\MedicalRep;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostLike;
+use App\Models\PostReport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -216,5 +217,34 @@ class PostController extends BaseMedicalRepController
         $like->delete();
         Post::whereKey($postId)->decrement('likes_count');
         return $this->success([], 'Post unliked');
+    }
+
+    public function report(Request $request, int $id): JsonResponse
+    {
+        $rep = $this->repOrForbidden();
+        if ($rep instanceof JsonResponse) {
+            return $rep;
+        }
+
+        $post = Post::find($id);
+        if (!$post) {
+            return $this->error('Post not found', 404);
+        }
+
+        $validated = $this->validateRequest($request, [
+            'reason' => ['nullable', 'string', 'max:500'],
+        ]);
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
+
+        PostReport::create([
+            'post_id' => $post->id,
+            'reporter_id' => $rep->id,
+            'reporter_type' => 'medical_rep',
+            'reason' => $validated['reason'] ?? null,
+        ]);
+
+        return $this->success([], 'Post reported', 201);
     }
 }

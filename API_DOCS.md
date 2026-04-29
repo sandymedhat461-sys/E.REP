@@ -806,6 +806,116 @@ All routes require: `Authorization: Bearer {admin_token}`
 
 ---
 
+### Admin list reported posts
+
+- **Method:** `GET`
+- **URL:** `/api/admin/posts/reported`
+- **Auth:** Yes — Admin
+
+**Success (200):** `{ "success": true, "data": { "posts": [] } }`
+
+**Errors:** `401`.
+
+---
+
+### Admin delete post
+
+- **Method:** `DELETE`
+- **URL:** `/api/admin/posts/{id}`
+- **Auth:** Yes — Admin
+
+**Success (200):** `{ "success": true, "message": "Post deleted" }`
+
+**Errors:** `401`, `404`.
+
+---
+
+### Admin list doctors
+
+- **Method:** `GET`
+- **URL:** `/api/admin/doctors`
+- **Auth:** Yes — Admin
+
+**Success (200):** `{ "success": true, "data": { "doctors": [] } }`
+
+**Errors:** `401`.
+
+---
+
+### Admin list reps
+
+- **Method:** `GET`
+- **URL:** `/api/admin/reps`
+- **Auth:** Yes — Admin
+
+**Success (200):** `{ "success": true, "data": { "reps": [] } }`
+
+**Errors:** `401`.
+
+---
+
+### Admin list companies
+
+- **Method:** `GET`
+- **URL:** `/api/admin/companies`
+- **Auth:** Yes — Admin
+
+**Success (200):** `{ "success": true, "data": { "companies": [] } }`
+
+**Errors:** `401`.
+
+---
+
+### Admin create company
+
+- **Method:** `POST`
+- **URL:** `/api/admin/companies`
+- **Auth:** Yes — Admin
+
+**Body:**
+
+```json
+{
+  "company_name": "...",
+  "email": "...",
+  "password": "...",
+  "hotline": "...",
+  "commercial_register": "..."
+}
+```
+
+**Success (201):** `{ "success": true, "data": { "company": { "id": 1, "company_name": "...", "email": "...", "status": "approved" } } }`
+
+**Errors:** `401`, `422`.
+
+---
+
+### Admin create rep
+
+- **Method:** `POST`
+- **URL:** `/api/admin/reps`
+- **Auth:** Yes — Admin
+
+**Body:**
+
+```json
+{
+  "full_name": "...",
+  "email": "...",
+  "password": "...",
+  "phone": "...",
+  "national_id": "...",
+  "company_id": 1,
+  "category_id": 1
+}
+```
+
+**Success (201):** `{ "success": true, "data": { "rep": { "id": 1, "full_name": "...", "email": "...", "status": "active" } } }`
+
+**Errors:** `401`, `422`.
+
+---
+
 # COMPANY
 
 All routes require: `Authorization: Bearer {company_token}`
@@ -2125,6 +2235,26 @@ Creates a redemption if the authenticated doctor’s total points (sum of `docto
 
 ---
 
+### Doctor report post
+
+- **Method:** `POST`
+- **URL:** `/api/doctor/posts/{id}/report`
+- **Auth:** Yes — Doctor
+
+**Body:**
+
+```json
+{
+  "reason": "Inappropriate content"
+}
+```
+
+**Success (201):** `{ "success": true, "message": "Post reported" }`
+
+**Errors:** `401`, `404`.
+
+---
+
 ### Doctor add comment
 
 - **Method:** `POST`
@@ -2625,6 +2755,26 @@ All routes require: `Authorization: Bearer {rep_token}`
 - **Auth:** Yes — Rep
 
 **Success (200):** `{ "success": true, "message": "Post deleted" }`
+
+**Errors:** `401`, `404`.
+
+---
+
+### Rep report post
+
+- **Method:** `POST`
+- **URL:** `/api/rep/posts/{id}/report`
+- **Auth:** Yes — Rep
+
+**Body:**
+
+```json
+{
+  "reason": "Spam"
+}
+```
+
+**Success (201):** `{ "success": true, "message": "Post reported" }`
 
 **Errors:** `401`, `404`.
 
