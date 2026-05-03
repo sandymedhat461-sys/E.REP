@@ -1087,6 +1087,37 @@ All routes require: `Authorization: Bearer {company_token}`
 
 ---
 
+### Company change password
+
+- **Method:** `PUT`
+- **URL:** `/api/company/password`
+- **Auth:** Yes — Company
+
+**Body:**
+
+```json
+{
+    "current_password": "...",
+    "new_password": "...",
+    "new_password_confirmation": "..."
+}
+```
+
+Changes company password after verifying current password.
+
+**Success (200):**
+
+```json
+{
+    "success": true,
+    "message": "Password updated successfully"
+}
+```
+
+**Errors:** `401`, `422`.
+
+---
+
 ### Company list active ingredients
 
 - **Method:** `GET`

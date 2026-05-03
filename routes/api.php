@@ -168,6 +168,7 @@ Route::prefix('company')->middleware('auth:company-api')->group(function () {
 
     Route::get('/profile', [CompanyProfileController::class, 'show']);
     Route::put('/profile', [CompanyProfileController::class, 'update']);
+    Route::put('/password', [CompanyProfileController::class, 'changePassword']);
 
     Route::get('/messages', [CompanyMessageController::class, 'index']);
     Route::post('/messages', [CompanyMessageController::class, 'store']);
