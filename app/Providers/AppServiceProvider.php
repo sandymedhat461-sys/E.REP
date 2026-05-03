@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         $this->app->booted(function () {
-            $this->app['migrator']->path(database_path('migrations'.DIRECTORY_SEPARATOR.'E_REP'));
+            $this->app->make('migrator')->path(database_path('migrations'.DIRECTORY_SEPARATOR.'E_REP'));
 
             // L5-Swagger defaults to attributes-only; enable @OA docblocks (requires doctrine/annotations).
             // Skip while `config:cache` runs or the cached config cannot be serialized.
