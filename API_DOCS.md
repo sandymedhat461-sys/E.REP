@@ -347,6 +347,21 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 
 ---
 
+### Company report
+
+- **Method:** `GET`
+- **URL:** `/api/company/report/generate`
+- **Auth:** Yes — **Company**
+
+**Success:** downloadable PDF file response
+
+- Returns a downloadable PDF report for the authenticated company
+- Response: PDF file download (`application/pdf`)
+
+**Errors:** `401`.
+
+---
+
 ### Doctor register
 
 - **Method:** `POST`
@@ -619,6 +634,21 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 
 ---
 
+### Medical rep report
+
+- **Method:** `GET`
+- **URL:** `/api/rep/report/generate`
+- **Auth:** Yes — **Rep**
+
+**Success:** downloadable PDF file response
+
+- Returns a downloadable PDF report for the authenticated rep
+- Response: PDF file download (`application/pdf`)
+
+**Errors:** `401`.
+
+---
+
 # ADMIN
 
 All routes require: `Authorization: Bearer {admin_token}`
@@ -704,6 +734,21 @@ Returns a full analytics breakdown: counts for doctors, medical reps, and compan
     }
 }
 ```
+
+**Errors:** `401`.
+
+---
+
+### Admin report
+
+- **Method:** `GET`
+- **URL:** `/api/admin/report/generate`
+- **Auth:** Yes — **Admin**
+
+**Success:** downloadable PDF file response
+
+- Returns a downloadable PDF system-wide report
+- Response: PDF file download (`application/pdf`)
 
 **Errors:** `401`.
 

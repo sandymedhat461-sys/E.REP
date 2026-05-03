@@ -39,6 +39,9 @@ use App\Http\Controllers\Company\DashboardController as CompanyDashboardControll
 use App\Http\Controllers\Company\MessageController as CompanyMessageController;
 use App\Http\Controllers\Company\ProfileController as CompanyProfileController;
 use App\Http\Controllers\Doctor\ReportController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Company\ReportController as CompanyReportController;
+use App\Http\Controllers\MedicalRep\ReportController as MedicalRepReportController;
 use App\Http\Controllers\MedicalRep\AssignedDoctorController;
 use App\Http\Controllers\MedicalRep\DrugController as MedicalRepDrugController;
 use App\Http\Controllers\MedicalRep\DrugSampleController as MedicalRepDrugSampleController;
@@ -84,6 +87,7 @@ Route::prefix('admin')->middleware('auth:admin-api')->group(function () {
 
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
     Route::get('/reports/stats', [DashboardController::class, 'reportStats']);
+    Route::get('/report/generate', [AdminReportController::class, 'generate']);
 
     Route::get('/categories', [DrugCategoryController::class, 'index']);
     Route::post('/categories', [DrugCategoryController::class, 'store']);
@@ -215,6 +219,7 @@ Route::prefix('company')->middleware('auth:company-api')->group(function () {
     Route::get('/reps/{id}', [CompanyMedicalRepController::class, 'show']);
     Route::post('/reps/{id}/targets', [CompanyMedicalRepController::class, 'upsertTarget']);
     Route::get('/reps/{id}/targets', [CompanyMedicalRepController::class, 'targets']);
+    Route::get('/report/generate', [CompanyReportController::class, 'generate']);
 
     Route::get('/posts', [CompanyPostController::class, 'index']);
     Route::post('/posts', [CompanyPostController::class, 'store']);
@@ -234,6 +239,7 @@ Route::prefix('company')->middleware('auth:company-api')->group(function () {
 Route::prefix('rep')->middleware('auth:rep-api')->group(function () {
     Route::get('/profile', [MedicalRepProfileController::class, 'show']);
     Route::put('/profile', [MedicalRepProfileController::class, 'update']);
+    Route::get('/report/generate', [MedicalRepReportController::class, 'generate']);
 
     Route::get('/points/total', [MedicalRepPointController::class, 'total']);
     Route::get('/points', [MedicalRepPointController::class, 'index']);
