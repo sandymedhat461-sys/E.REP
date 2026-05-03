@@ -231,6 +231,63 @@ Public auth routes do **not** require a token. `logout` and `me` require the mat
 
 ---
 
+### Admin profile (show)
+
+- **Method:** `GET`
+- **URL:** `/api/admin/profile`
+- **Auth:** Yes — Admin
+
+**Success (200):** `{ "success": true, "data": { "admin": { } } }`
+
+**Errors:** `401`.
+
+---
+
+### Admin profile (update)
+
+- **Method:** `PUT`
+- **URL:** `/api/admin/profile`
+- **Auth:** Yes — Admin
+
+**Body (all optional):** `full_name` (string, max 255), `phone`.
+
+**Success (200):** `{ "success": true, "data": { "admin": { } } }`
+
+**Errors:** `401`, `422`.
+
+---
+
+### Admin change password
+
+- **Method:** `PUT`
+- **URL:** `/api/admin/password`
+- **Auth:** Yes — Admin
+
+**Body:**
+
+```json
+{
+    "current_password": "...",
+    "new_password": "...",
+    "new_password_confirmation": "..."
+}
+```
+
+Changes admin password after verifying current password.
+
+**Success (200):**
+
+```json
+{
+    "success": true,
+    "message": "Password updated successfully"
+}
+```
+
+**Errors:** `401`, `422`.
+
+---
+
 ### Company register
 
 - **Method:** `POST`
@@ -1963,6 +2020,37 @@ All routes require: `Authorization: Bearer {doctor_token}`
 
 ---
 
+### Doctor change password
+
+- **Method:** `PUT`
+- **URL:** `/api/doctor/password`
+- **Auth:** Yes — Doctor
+
+**Body:**
+
+```json
+{
+    "current_password": "...",
+    "new_password": "...",
+    "new_password_confirmation": "..."
+}
+```
+
+Changes doctor password after verifying current password.
+
+**Success (200):**
+
+```json
+{
+    "success": true,
+    "message": "Password updated successfully"
+}
+```
+
+**Errors:** `401`, `422`.
+
+---
+
 ### Doctor list drugs
 
 - **Method:** `GET`
@@ -2649,6 +2737,37 @@ All routes require: `Authorization: Bearer {rep_token}`
 **Body (all optional):** `full_name` (string, max 255), `phone`.
 
 **Success (200):** `{ "success": true, "data": { "rep": { } } }`
+
+**Errors:** `401`, `422`.
+
+---
+
+### Rep change password
+
+- **Method:** `PUT`
+- **URL:** `/api/rep/password`
+- **Auth:** Yes — Rep
+
+**Body:**
+
+```json
+{
+    "current_password": "...",
+    "new_password": "...",
+    "new_password_confirmation": "..."
+}
+```
+
+Changes rep password after verifying current password.
+
+**Success (200):**
+
+```json
+{
+    "success": true,
+    "message": "Password updated successfully"
+}
+```
 
 **Errors:** `401`, `422`.
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\MedicalRep;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +11,7 @@ class ProfileController extends Controller
 {
     public function show(Request $request): JsonResponse
     {
-        return $this->success(['rep' => $request->user()]);
+        return $this->success(['admin' => $request->user()]);
     }
 
     public function update(Request $request): JsonResponse
@@ -19,16 +19,18 @@ class ProfileController extends Controller
         $validated = $this->validateRequest($request, [
             'full_name' => ['sometimes', 'string', 'max:255'],
             'phone' => ['sometimes', 'string'],
+            'email' => ['sometimes', 'email', 'unique:admins,email,' . $request->user()->id],
+            'image' => ['sometimes', 'string'],
         ]);
         if ($validated instanceof JsonResponse) {
             return $validated;
         }
 
-        $rep = $request->user();
-        $rep->fill($validated);
-        $rep->save();
+        $admin = $request->user();
+        $admin->fill($validated);
+        $admin->save();
 
-        return $this->success(['rep' => $rep->fresh()]);
+        return $this->success(['admin' => $admin->fresh()]);
     }
 
     public function changePassword(Request $request): JsonResponse
@@ -42,13 +44,13 @@ class ProfileController extends Controller
             return $validated;
         }
 
-        $rep = $request->user();
-        if (!Hash::check($validated['current_password'], $rep->password)) {
+        $admin = $request->user();
+        if (!Hash::check($validated['current_password'], $admin->password)) {
             return $this->error('Current password is incorrect', 422);
         }
 
-        $rep->password = bcrypt($validated['new_password']);
-        $rep->save();
+        $admin->password = bcrypt($validated['new_password']);
+        $admin->save();
 
         return $this->success([], 'Password updated successfully');
     }

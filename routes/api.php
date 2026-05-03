@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\MedicalRepAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DrugCategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Doctor\CommentController;
 use App\Http\Controllers\Doctor\DoctorPointController;
@@ -102,11 +103,16 @@ Route::prefix('admin')->middleware('auth:admin-api')->group(function () {
     Route::get('/companies', [UserManagementController::class, 'listCompanies']);
     Route::post('/companies', [UserManagementController::class, 'createCompany']);
     Route::post('/reps', [UserManagementController::class, 'createRep']);
+
+    Route::get('/profile', [AdminProfileController::class, 'show']);
+    Route::put('/profile', [AdminProfileController::class, 'update']);
+    Route::put('/password', [AdminProfileController::class, 'changePassword']);
 });
 
 Route::prefix('doctor')->middleware('auth:doctor-api')->group(function () {
     Route::get('/profile', [DoctorProfileController::class, 'show']);
     Route::put('/profile', [DoctorProfileController::class, 'update']);
+    Route::put('/password', [DoctorProfileController::class, 'changePassword']);
 
     Route::get('/drugs', [DrugController::class, 'index']);
     Route::get('/drugs/{id}', [DrugController::class, 'show']);
@@ -239,6 +245,7 @@ Route::prefix('company')->middleware('auth:company-api')->group(function () {
 Route::prefix('rep')->middleware('auth:rep-api')->group(function () {
     Route::get('/profile', [MedicalRepProfileController::class, 'show']);
     Route::put('/profile', [MedicalRepProfileController::class, 'update']);
+    Route::put('/password', [MedicalRepProfileController::class, 'changePassword']);
     Route::get('/report/generate', [MedicalRepReportController::class, 'generate']);
 
     Route::get('/points/total', [MedicalRepPointController::class, 'total']);
