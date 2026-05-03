@@ -14,6 +14,13 @@ use Throwable;
 class AdminAuthController extends Controller
 {
 
+    /**
+     * @OA\Post(
+     *     path="/api/auth/admin/register",
+     *     summary="Register a new admin",
+     *     @OA\Response(response=201, description="Success")
+     * )
+     */
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -99,7 +106,7 @@ class AdminAuthController extends Controller
         }
     }
 
- 
+
     public function logout(Request $request): JsonResponse
     {
         $request->user()?->currentAccessToken()?->delete();
