@@ -24,17 +24,7 @@
                 "type": "http",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
-            },
-            "sanctum": {
-                "type": "http",
-                "description": "Enter token in format (Bearer <token>)",
-                "scheme": "bearer"
             }
         }
-    },
-    "security": [
-        {
-            "sanctum": []
-        }
-    ]
+    }
 }
