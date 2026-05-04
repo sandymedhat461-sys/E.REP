@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Doctor;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\PostReport;
+use App\Models\PostShare;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-   
+
     public function index(): JsonResponse
     {
         $posts = Post::query()
-            ->where('status', 'published')
+            // ->where('status', 'published')
             ->with('author')
             ->orderByDesc('created_at')
             ->paginate(15);
@@ -22,7 +23,7 @@ class PostController extends Controller
         return $this->success(['posts' => $posts]);
     }
 
-    
+
     public function store(Request $request): JsonResponse
     {
         $validated = $this->validateRequest($request, [
@@ -51,7 +52,7 @@ class PostController extends Controller
         return $this->success(['post' => $post], null, 201);
     }
 
-   
+
     public function show(int $id): JsonResponse
     {
         $post = Post::query()
@@ -67,7 +68,7 @@ class PostController extends Controller
         return $this->success(['post' => $post]);
     }
 
-    
+
     public function update(Request $request, int $id): JsonResponse
     {
         $post = Post::find($id);
@@ -141,5 +142,30 @@ class PostController extends Controller
         ]);
 
         return $this->success([], 'Post reported', 201);
+    }
+
+    public function share(Request $request, int $id): JsonResponse
+    {
+        $post = Post::find($id);
+        if (!$post) {
+            return $this->error('Post not found', 404);
+        }
+
+        $alreadyShared = PostShare::where('post_id', $id)
+            ->where('sharer_id', $request->user()->id)
+            ->where('sharer_type', 'doctor')
+            ->exists();
+
+        if ($alreadyShared) {
+            return $this->error('Already shared', 409);
+        }
+
+        PostShare::create([
+            'post_id' => $id,
+            'sharer_id' => $request->user()->id,
+            'sharer_type' => 'doctor',
+        ]);
+
+        return $this->success([], 'Post shared', 201);
     }
 }

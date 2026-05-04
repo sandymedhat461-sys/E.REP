@@ -3006,6 +3006,41 @@
                 ]
             }
         },
+        "/api/company/posts/{id}/share": {
+            "post": {
+                "tags": [
+                    "Company - Posts"
+                ],
+                "summary": "Share a post",
+                "operationId": "shareCompanyPost",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Post shared successfully"
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    },
+                    "409": {
+                        "description": "Already shared"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/company/rewards": {
             "get": {
                 "tags": [
@@ -4788,6 +4823,41 @@
                 ]
             }
         },
+        "/api/doctor/posts/{id}/share": {
+            "post": {
+                "tags": [
+                    "Doctor - Posts"
+                ],
+                "summary": "Share a post",
+                "operationId": "shareDoctorPost",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Post shared successfully"
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    },
+                    "409": {
+                        "description": "Already shared"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/doctor/posts/{postId}/like": {
             "post": {
                 "tags": [
@@ -6334,6 +6404,41 @@
                     },
                     "401": {
                         "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/rep/posts/{id}/share": {
+            "post": {
+                "tags": [
+                    "Rep - Posts"
+                ],
+                "summary": "Share a post",
+                "operationId": "shareRepPost",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Post shared successfully"
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    },
+                    "409": {
+                        "description": "Already shared"
                     }
                 },
                 "security": [

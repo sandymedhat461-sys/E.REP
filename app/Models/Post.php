@@ -51,5 +51,9 @@ class Post extends Model
     {
         return $this->hasMany(PostReport::class);
     }
-}
 
+    public function postShares(): HasMany
+    {
+        return $this->hasMany(PostShare::class);
+    }
+}

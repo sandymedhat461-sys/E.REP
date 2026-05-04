@@ -1976,6 +1976,18 @@ Changes company password after verifying current password.
 
 ---
 
+### Company share post
+
+- **Method:** `POST`
+- **URL:** `/api/company/posts/{id}/share`
+- **Auth:** Yes — Company
+
+**Success (201):** `{ "success": true, "message": "Post shared" }`
+
+**Errors:** `401`, `404`, `409`.
+
+---
+
 ### Company delete comment
 
 - **Method:** `DELETE`
@@ -2546,6 +2558,18 @@ Creates a redemption if the authenticated doctor’s total points (sum of `docto
 **Success (201):** `{ "success": true, "message": "Post reported" }`
 
 **Errors:** `401`, `404`.
+
+---
+
+### Doctor share post
+
+- **Method:** `POST`
+- **URL:** `/api/doctor/posts/{id}/share`
+- **Auth:** Yes — Doctor
+
+**Success (201):** `{ "success": true, "message": "Post shared" }`
+
+**Errors:** `401`, `404`, `409`.
 
 ---
 
@@ -3202,6 +3226,18 @@ Returns point ledger rows for the authenticated rep (`point_transactions` with `
 **Success (200):** `{ "success": true, "data": { "liked": false } }`
 
 **Errors:** `401`, `404`.
+
+---
+
+### Rep share post
+
+- **Method:** `POST`
+- **URL:** `/api/rep/posts/{id}/share`
+- **Auth:** Yes — Rep
+
+**Success (201):** `{ "success": true, "message": "Post shared" }`
+
+**Errors:** `401`, `404`, `409`.
 
 ---
 

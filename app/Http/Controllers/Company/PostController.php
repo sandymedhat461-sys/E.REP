@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Company;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostLike;
+use App\Models\PostShare;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PostController extends BaseCompanyController
 {
-    
+
     public function index(): JsonResponse
     {
         $company = $this->companyOrForbidden();
@@ -22,7 +23,7 @@ class PostController extends BaseCompanyController
         return $this->success(['posts' => $posts]);
     }
 
-    
+
     public function store(Request $request): JsonResponse
     {
         $company = $this->companyOrForbidden();
@@ -50,7 +51,7 @@ class PostController extends BaseCompanyController
         return $this->success(['post' => $post], null, 201);
     }
 
-    
+
     public function show(int $id): JsonResponse
     {
         $company = $this->companyOrForbidden();
@@ -65,7 +66,7 @@ class PostController extends BaseCompanyController
         return $this->success(['post' => $post]);
     }
 
-    
+
     public function update(Request $request, int $id): JsonResponse
     {
         $company = $this->companyOrForbidden();
@@ -94,7 +95,7 @@ class PostController extends BaseCompanyController
         return $this->success(['post' => $post->fresh()]);
     }
 
-    
+
     public function destroy(int $id): JsonResponse
     {
         $company = $this->companyOrForbidden();
@@ -114,7 +115,7 @@ class PostController extends BaseCompanyController
         return $this->success([], 'Post deleted');
     }
 
-    
+
     public function storeComment(Request $request, int $postId): JsonResponse
     {
         $company = $this->companyOrForbidden();
@@ -166,7 +167,7 @@ class PostController extends BaseCompanyController
         return $this->success([], 'Comment deleted');
     }
 
-    
+
     public function like(int $postId): JsonResponse
     {
         $company = $this->companyOrForbidden();
@@ -193,7 +194,7 @@ class PostController extends BaseCompanyController
         return $this->success([], 'Post liked', 201);
     }
 
-    
+
     public function unlike(int $postId): JsonResponse
     {
         $company = $this->companyOrForbidden();
@@ -209,5 +210,30 @@ class PostController extends BaseCompanyController
         $like->delete();
         Post::whereKey($postId)->decrement('likes_count');
         return $this->success([], 'Post unliked');
+    }
+
+    public function share(Request $request, int $id): JsonResponse
+    {
+        $post = Post::find($id);
+        if (!$post) {
+            return $this->error('Post not found', 404);
+        }
+
+        $alreadyShared = PostShare::where('post_id', $id)
+            ->where('sharer_id', $request->user()->id)
+            ->where('sharer_type', 'company')
+            ->exists();
+
+        if ($alreadyShared) {
+            return $this->error('Already shared', 409);
+        }
+
+        PostShare::create([
+            'post_id' => $id,
+            'sharer_id' => $request->user()->id,
+            'sharer_type' => 'company',
+        ]);
+
+        return $this->success([], 'Post shared', 201);
     }
 }

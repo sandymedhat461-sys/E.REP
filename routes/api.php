@@ -157,6 +157,7 @@ Route::prefix('doctor')->middleware('auth:doctor-api')->group(function () {
     Route::put('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
     Route::post('/posts/{id}/report', [PostController::class, 'report']);
+    Route::post('/posts/{id}/share', [PostController::class, 'share']);
 
     Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
     Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
@@ -236,6 +237,7 @@ Route::prefix('company')->middleware('auth:company-api')->group(function () {
     Route::delete('/comments/{id}', [CompanyPostController::class, 'destroyComment']);
     Route::post('/posts/{postId}/like', [CompanyPostController::class, 'like']);
     Route::delete('/posts/{postId}/unlike', [CompanyPostController::class, 'unlike']);
+    Route::post('/posts/{id}/share', [CompanyPostController::class, 'share']);
 
     Route::get('/notifications', [CompanyNotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [CompanyNotificationController::class, 'markAsRead']);
@@ -281,6 +283,7 @@ Route::prefix('rep')->middleware('auth:rep-api')->group(function () {
     Route::put('/posts/{id}', [MedicalRepPostController::class, 'update']);
     Route::delete('/posts/{id}', [MedicalRepPostController::class, 'destroy']);
     Route::post('/posts/{id}/report', [MedicalRepPostController::class, 'report']);
+    Route::post('/posts/{id}/share', [MedicalRepPostController::class, 'share']);
     Route::post('/posts/{postId}/comments', [MedicalRepPostController::class, 'storeComment']);
     Route::delete('/comments/{id}', [MedicalRepPostController::class, 'destroyComment']);
     Route::post('/posts/{postId}/like', [MedicalRepPostController::class, 'like']);
